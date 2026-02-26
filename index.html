@@ -41,7 +41,7 @@
         };
 
         // --- GOOGLE SHEETS AUTOMATION ---
-        const googleScriptURL = "https://script.google.com/macros/s/AKfycbyj19PsJ6Tbhbi8KpGscitXVoZ62W37gcJ_knbb61karIrPwS-9XjQkdemy5D-aPZYh/exec"; 
+        const googleScriptURL = "https://script.google.com/macros/s/AKfycbzBxGfVBF8YEFCe46B-qvCCGZmTSx6nlDIKZ26KgCEHwZ2a6UCVrwaB7WEFd2fUTpYB/exec"; 
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -78,7 +78,6 @@
 
         window.toggleAbstract = (bool) => {
             state.showAbstract = bool;
-            // Prevent body scroll when modal is open
             document.body.style.overflow = bool ? 'hidden' : 'auto';
             render();
         };
@@ -93,7 +92,6 @@
                 email: formData.get('email'),
                 affiliation: formData.get('affiliation'),
                 researchField: formData.get('researchField'),
-                wantsCaseStudy: formData.get('wantsCaseStudy') === 'on',
                 timestamp: serverTimestamp(),
                 userId: state.user.uid
             };
@@ -102,9 +100,11 @@
             render();
 
             try {
+                // 1. Save to Firebase
                 const registrationsCol = collection(db, 'artifacts', appId, 'public', 'data', 'registrations');
                 await addDoc(registrationsCol, data);
 
+                // 2. Sync to Google Sheets
                 if (googleScriptURL) {
                     fetch(googleScriptURL, {
                         method: 'POST',
@@ -208,7 +208,7 @@
                                                 <th class="px-6 py-4 text-sm font-bold text-slate-700">Name</th>
                                                 <th class="px-6 py-4 text-sm font-bold text-slate-700">Email</th>
                                                 <th class="px-6 py-4 text-sm font-bold text-slate-700">Affiliation</th>
-                                                <th class="px-6 py-4 text-sm font-bold text-slate-700 text-center">Case Study?</th>
+                                                <th class="px-6 py-4 text-sm font-bold text-slate-700">Research Field</th>
                                                 <th class="px-6 py-4 text-sm font-bold text-slate-700">Actions</th>
                                             </tr>
                                         </thead>
@@ -218,9 +218,7 @@
                                                     <td class="px-6 py-4 font-medium text-slate-900">${reg.name}</td>
                                                     <td class="px-6 py-4 text-slate-600 text-sm">${reg.email}</td>
                                                     <td class="px-6 py-4 text-slate-600 text-sm">${reg.affiliation}</td>
-                                                    <td class="px-6 py-4 text-center">
-                                                        ${reg.wantsCaseStudy ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-[10px] font-bold">YES</span>' : '<span class="text-slate-300">—</span>'}
-                                                    </td>
+                                                    <td class="px-6 py-4 text-slate-600 text-sm">${reg.researchField || '—'}</td>
                                                     <td class="px-6 py-4">
                                                         <button onclick="deleteEntry('${reg.id}')" class="text-slate-300 hover:text-red-600 transition-colors">
                                                             <i data-lucide="trash-2" size="18"></i>
@@ -281,7 +279,7 @@
                                 Hosted by <span class="font-semibold text-slate-800">Zukunftskolleg Konstanz</span> & <span class="font-semibold text-slate-800">The Martin Buber Society of Fellows</span>.
                             </p>
                             
-                            <button onclick="toggleAbstract(true)" class="group flex items-center gap-2 text-indigo-600 font-bold hover:text-indigo-800 transition-all mb-10 text-lg">
+                            <button onclick="toggleAbstract(true)" class="group flex items-center gap-2 text-indigo-600 font-bold hover:text-indigo-800 transition-all mb-10 text-lg text-left">
                                 <i data-lucide="file-text" size="20"></i>
                                 <span class="border-b-2 border-indigo-100 group-hover:border-indigo-800">Read the full workshop abstract</span>
                                 <i data-lucide="chevron-right" size="18" class="group-hover:translate-x-1 transition-transform"></i>
@@ -394,12 +392,7 @@
                                             <option value="Other">Other (Guest)</option>
                                         </select></div>
                                         <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Research Field</label><input name="researchField" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="e.g. Digital Humanities"></div>
-                                        <div class="pt-2">
-                                            <label class="flex items-start gap-3 cursor-pointer group bg-slate-50 p-3 rounded-xl border border-transparent hover:border-indigo-100 transition-all">
-                                                <input type="checkbox" name="wantsCaseStudy" class="mt-1 w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                                                <span class="text-sm text-slate-600 leading-tight">I am interested in contributing a brief case study from my research context.</span>
-                                            </label>
-                                        </div>
+                                        
                                         <div class="mt-4 p-4 bg-indigo-50 rounded-2xl border border-indigo-100 flex gap-3 items-start shadow-sm">
                                             <i data-lucide="info" class="text-indigo-600 flex-shrink-0 mt-0.5" size="18"></i>
                                             <p class="text-[13px] leading-relaxed text-indigo-900 font-medium">
