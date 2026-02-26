@@ -24,11 +24,20 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        const firebaseConfig = JSON.parse(__firebase_config);
+        // --- FIREBASE CONFIGURATION (Hardcoded as requested) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCpIyH2_HHFpkatGdpbNeGcugPRvkMK-ok",
+            authDomain: "mbsfzuko-workshop.firebaseapp.com",
+            projectId: "mbsfzuko-workshop",
+            storageBucket: "mbsfzuko-workshop.firebasestorage.app",
+            messagingSenderId: "613261271832",
+            appId: "1:613261271832:web:610e7609b367cae0da746d"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'workshop-rsvp-2026';
+        const appId = 'workshop-rsvp-2026';
 
         let state = {
             view: 'landing',
@@ -39,10 +48,11 @@
         };
 
         async function initAuth() {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
+            try {
+                // For GitHub deployment, we always use Anonymous login
                 await signInAnonymously(auth);
+            } catch (e) {
+                console.error("Auth error:", e);
             }
             onAuthStateChanged(auth, (u) => {
                 state.user = u;
@@ -80,7 +90,7 @@
                 state.view = 'success';
             } catch (e) {
                 console.error(e);
-                alert("Error saving registration.");
+                alert("Error saving registration. Please check if Firestore Database is enabled in Test Mode.");
             } finally {
                 state.loading = false;
                 render();
@@ -238,7 +248,7 @@
                                     <p class="text-xl text-slate-800 leading-relaxed mb-8 font-medium">Artificial Intelligence is no longer a distant theoretical prospect; it is actively reshaping the mechanics of how we think, write, and discover.</p>
                                     <div class="space-y-6 text-slate-600 leading-relaxed text-lg">
                                         <p>Beyond the hype, how do these tools redefine the day-to-day labor of a historian deciphering a century of archives, a sociologist mapping social networks, or a scientist postulating a new hypothesis?</p>
-                                        <p>We invite postdoctoral fellows to join a collaborative exploration of the methodological frontier. This workshop moves past the "what if" to focus on the "how to," examining the concrete impact of AI across the Humanities, Social Sciences, and STEM.</p>
+                                        <p>We invite postdoctoral fellows to help map the shifting methodological landscape. This workshop examines the concrete impact of AI across the Humanities, Social Sciences, and STEM.</p>
                                     </div>
                                 </section>
 
@@ -277,21 +287,21 @@
                                         <h2 class="text-2xl font-bold text-slate-800 tracking-tight">What to Expect</h2>
                                     </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-100 transition-colors">
+                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm transition-colors">
                                             <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="file-text" size="22"></i></div>
-                                            <div><h4 class="font-bold text-slate-800 mb-1">Fellow-Led Case Studies</h4><p class="text-slate-500 text-sm leading-snug">Brief, 'under the hood' looks at peers' AI workflows.</p></div>
+                                            <div><h4 class="font-bold">Case Studies</h4><p class="text-slate-500 text-sm">Peer-led AI workflow looks.</p></div>
                                         </div>
-                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-100 transition-colors">
+                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm transition-colors">
                                             <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="users" size="22"></i></div>
-                                            <div><h4 class="font-bold text-slate-800 mb-1">Interactive Roundtables</h4><p class="text-slate-500 text-sm leading-snug">Dives into scalable reading and bias assessment.</p></div>
+                                            <div><h4 class="font-bold">Interactive Roundtables</h4><p class="text-slate-500 text-sm">Dives into scalable reading and bias assessment.</p></div>
                                         </div>
-                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-100 transition-colors">
+                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm transition-colors">
                                             <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="map-pin" size="22"></i></div>
-                                            <div><h4 class="font-bold text-slate-800 mb-1">Field Research</h4><p class="text-slate-500 text-sm leading-snug">Curated site visit to the Abbey Archives in St. Gallen.</p></div>
+                                            <div><h4 class="font-bold">Field Research</h4><p class="text-slate-500 text-sm">Site visit to the Abbey Archives in St. Gallen.</p></div>
                                         </div>
-                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-100 transition-colors">
+                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm transition-colors">
                                             <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="cpu" size="22"></i></div>
-                                            <div><h4 class="font-bold text-slate-800 mb-1">Skill Acquisition</h4><p class="text-slate-500 text-sm leading-snug">Workshops on computational research frameworks.</p></div>
+                                            <div><h4 class="font-bold">Skill Acquisition</h4><p class="text-slate-500 text-sm">Workshops on computational research frameworks.</p></div>
                                         </div>
                                     </div>
                                 </section>
@@ -350,7 +360,7 @@
                         <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
                             <div class="text-center md:text-left">
                                 <h3 class="text-slate-900 font-bold text-xl mb-2 tracking-tight">Shared Learning Environment</h3>
-                                <p class="text-slate-500 max-w-sm text-sm">Fostering cross-disciplinary collaboration and skill acquisition in the age of AI.</p>
+                                <p class="text-slate-500 max-w-sm text-sm">Fostering collaboration in the age of AI.</p>
                                 <button onclick="setView('admin-login')" class="mt-6 text-[10px] font-bold uppercase tracking-widest text-slate-300 hover:text-indigo-600 transition-colors flex items-center gap-1 mx-auto md:mx-0"><i data-lucide="lock" size="12"></i> Organizer Login</button>
                             </div>
                             <div class="flex gap-10 items-center opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
