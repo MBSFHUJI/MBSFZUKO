@@ -12,7 +12,6 @@
         .fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Modal Backdrop Blur */
         .modal-backdrop {
             background-color: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(4px);
@@ -40,8 +39,8 @@
             appId: "1:613261271832:web:610e7609b367cae0da746d"
         };
 
-        // --- GOOGLE SHEETS AUTOMATION ---
-        const googleScriptURL = "https://script.google.com/macros/s/AKfycbzBxGfVBF8YEFCe46B-qvCCGZmTSx6nlDIKZ26KgCEHwZ2a6UCVrwaB7WEFd2fUTpYB/exec"; 
+        // --- GOOGLE SHEETS AUTOMATION (Updated URL) ---
+        const googleScriptURL = "https://script.google.com/macros/s/AKfycbzQV-G5mFwMVGoxwjuXget9bf0dnTgB0c-vC_wIEifkTCY0PTzs0bKmLGQldvzRNDxd/exec"; 
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -92,6 +91,12 @@
                 email: formData.get('email'),
                 affiliation: formData.get('affiliation'),
                 researchField: formData.get('researchField'),
+                participation: {
+                    sunday: formData.get('attending_sunday') === 'on',
+                    monday: formData.get('attending_monday') === 'on',
+                    tuesday: formData.get('attending_tuesday') === 'on'
+                },
+                dietary: formData.get('dietary'),
                 timestamp: serverTimestamp(),
                 userId: state.user.uid
             };
@@ -189,7 +194,7 @@
             } else if (state.view === 'admin-dashboard') {
                 container.innerHTML = `
                     <div class="min-h-screen p-6 md:p-12 fade-in">
-                        <div class="max-w-6xl mx-auto">
+                        <div class="max-w-7xl mx-auto">
                             <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
                                 <div>
                                     <button onclick="setView('landing')" class="text-indigo-600 font-semibold flex items-center gap-1 mb-2 hover:underline">← Back to Landing Page</button>
@@ -208,25 +213,32 @@
                                                 <th class="px-6 py-4 text-sm font-bold text-slate-700">Name</th>
                                                 <th class="px-6 py-4 text-sm font-bold text-slate-700">Email</th>
                                                 <th class="px-6 py-4 text-sm font-bold text-slate-700">Affiliation</th>
-                                                <th class="px-6 py-4 text-sm font-bold text-slate-700">Research Field</th>
+                                                <th class="px-6 py-4 text-sm font-bold text-slate-700">Days</th>
+                                                <th class="px-6 py-4 text-sm font-bold text-slate-700">Dietary</th>
                                                 <th class="px-6 py-4 text-sm font-bold text-slate-700">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-slate-100">
-                                            ${state.registrations.map(reg => `
+                                            ${state.registrations.map(reg => {
+                                                const days = [];
+                                                if (reg.participation?.sunday) days.push("Sun");
+                                                if (reg.participation?.monday) days.push("Mon");
+                                                if (reg.participation?.tuesday) days.push("Tue");
+                                                return `
                                                 <tr class="hover:bg-slate-50 transition-colors">
                                                     <td class="px-6 py-4 font-medium text-slate-900">${reg.name}</td>
                                                     <td class="px-6 py-4 text-slate-600 text-sm">${reg.email}</td>
                                                     <td class="px-6 py-4 text-slate-600 text-sm">${reg.affiliation}</td>
-                                                    <td class="px-6 py-4 text-slate-600 text-sm">${reg.researchField || '—'}</td>
+                                                    <td class="px-6 py-4 text-slate-600 text-xs">${days.join(", ") || '—'}</td>
+                                                    <td class="px-6 py-4 text-slate-600 text-xs truncate max-w-[150px]">${reg.dietary || '—'}</td>
                                                     <td class="px-6 py-4">
                                                         <button onclick="deleteEntry('${reg.id}')" class="text-slate-300 hover:text-red-600 transition-colors">
                                                             <i data-lucide="trash-2" size="18"></i>
                                                         </button>
                                                     </td>
-                                                </tr>
-                                            `).join('')}
-                                            ${state.registrations.length === 0 ? '<tr><td colspan="5" class="px-6 py-20 text-center text-slate-400 italic">No registrations found yet.</td></tr>' : ''}
+                                                </tr>`;
+                                            }).join('')}
+                                            ${state.registrations.length === 0 ? '<tr><td colspan="6" class="px-6 py-20 text-center text-slate-400 italic">No registrations found yet.</td></tr>' : ''}
                                         </tbody>
                                     </table>
                                 </div>
@@ -247,7 +259,7 @@
                                 </button>
                             </div>
                             <div class="p-6 md:p-10 overflow-y-auto text-slate-700 leading-relaxed space-y-4 text-lg">
-                                <p>This interdisciplinary workshop brings together postdoctoral fellows from the Zukunftskolleg Konstanz and the Martin Buber Society of Fellows in the Humanities and Social Sciences to examine the concrete methodological impact of AI across the humanities, social sciences, and STEM fields. Rather than addressing AI at a purely theoretical level, the workshop focuses on how research workflows, epistemic standards, and scholarly expertise are reshaped in practice.</p>
+                                <p>This interdisciplinary workshop brings together postdoctoral fellows from the <strong>Zukunftskolleg Konstanz (Germany)</strong> and the <strong>Martin Buber Society of Fellows in the Humanities and Social Sciences, Hebrew University Jerusalem (Israel)</strong> to examine the concrete methodological impact of AI across the humanities, social sciences, and STEM fields. Rather than addressing AI at a purely theoretical level, the workshop focuses on how research workflows, epistemic standards, and scholarly expertise are reshaped in practice.</p>
                                 <p>We explore AI in four roles: as instrument (automation), assistant (augmentation), co-author (generation), and epistemic agent (hypothesis formation). Through short case studies presented by participating fellows, alongside interactive roundtables and a site visit to an archive in St. Gallen going through a digitization project, we investigate transformations such as scalable reading, vector-space modelling, automated transcription, and data-driven hypothesis formation. Particular emphasis will be placed on translating research questions into computationally viable tasks and on critically assessing algorithmic limits and biases.</p>
                                 <p>Participants are expected to actively engage in discussion and collaborative exercises; some will contribute brief case studies from their own research contexts. Prior expertise in AI or experience with AI-based research projects is not required. The workshop is conceived as a shared learning environment fostering methodological exchange, skill acquisition, and cross-disciplinary collaboration.</p>
                                 <p>Planned outputs include a joint symposium with invited experts and—potentially—a collaborative publication (e.g., a repository of research-specific prompt patterns for large language models).</p>
@@ -276,7 +288,7 @@
                             </div>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6 leading-[1.1] max-w-4xl tracking-tight">From Tool to Teammate: How Does AI Fundamentally Transform Research Practice?</h1>
                             <p class="text-xl md:text-2xl text-slate-600 mb-6 max-w-3xl leading-relaxed font-light">
-                                Hosted by <span class="font-semibold text-slate-800">Zukunftskolleg Konstanz</span> & <span class="font-semibold text-slate-800">The Martin Buber Society of Fellows</span>.
+                                Hosted by <span class="font-semibold text-slate-800">Zukunftskolleg Konstanz</span> & <span class="font-semibold text-slate-800">The Martin Buber Society of Fellows Jerusalem</span>.
                             </p>
                             
                             <button onclick="toggleAbstract(true)" class="group flex items-center gap-2 text-indigo-600 font-bold hover:text-indigo-800 transition-all mb-10 text-lg text-left">
@@ -287,12 +299,13 @@
 
                             <div class="flex flex-wrap gap-4 text-slate-700 font-medium">
                                 <div class="flex items-center gap-2.5 bg-white px-5 py-3 rounded-xl shadow-sm border border-slate-200">
-                                    <i data-lucide="calendar" class="text-indigo-600" size="20"></i> June 2026
+                                    <i data-lucide="calendar" class="text-indigo-600" size="20"></i> Monday & Tuesday, June 8–9, 2026
                                 </div>
                                 <div class="flex items-center gap-2.5 bg-white px-5 py-3 rounded-xl shadow-sm border border-slate-200">
-                                    <i data-lucide="map-pin" class="text-indigo-600" size="20"></i> Konstanz & St. Gallen
+                                    <i data-lucide="map-pin" class="text-indigo-600" size="20"></i> Konstanz
                                 </div>
                             </div>
+                            <p class="mt-4 text-sm text-slate-400 italic">Travel days for external participants: Sunday June 7 and Wednesday June 10.</p>
                         </div>
                     </header>
 
@@ -381,7 +394,9 @@
 
                             <div class="lg:col-span-1">
                                 <div class="sticky top-10 bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
-                                    <h2 class="text-2xl font-bold text-slate-900 mb-6">RSVP</h2>
+                                    <h2 class="text-2xl font-bold text-slate-900 mb-2">RSVP</h2>
+                                    <p class="text-indigo-600 text-xs font-bold mb-6 uppercase tracking-wider">Registration Deadline: April 30, 2026</p>
+                                    
                                     <form onsubmit="handleRSVP(event)" class="space-y-5">
                                         <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Full Name</label><input name="name" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all" placeholder="Dr. Alex Scholar"></div>
                                         <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Email Address</label><input type="email" name="email" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all" placeholder="email@institution.edu"></div>
@@ -393,6 +408,29 @@
                                         </select></div>
                                         <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Research Field</label><input name="researchField" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="e.g. Digital Humanities"></div>
                                         
+                                        <div class="pt-4 border-t border-slate-100">
+                                            <label class="block text-sm font-bold text-slate-700 mb-3">Participation Days</label>
+                                            <div class="space-y-2">
+                                                <label class="flex items-center gap-3 cursor-pointer group">
+                                                    <input type="checkbox" name="attending_sunday" class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                                                    <span class="text-sm text-slate-600">Sunday Dinner (June 7)</span>
+                                                </label>
+                                                <label class="flex items-center gap-3 cursor-pointer group">
+                                                    <input type="checkbox" name="attending_monday" class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                                                    <span class="text-sm text-slate-600">Monday (June 8)</span>
+                                                </label>
+                                                <label class="flex items-center gap-3 cursor-pointer group">
+                                                    <input type="checkbox" name="attending_tuesday" class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                                                    <span class="text-sm text-slate-600">Tuesday (June 9)</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-bold text-slate-700 mb-1.5">Dietary Requirements / Special Needs</label>
+                                            <textarea name="dietary" rows="2" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" placeholder="e.g. Allergies, accessibility needs..."></textarea>
+                                        </div>
+
                                         <div class="mt-4 p-4 bg-indigo-50 rounded-2xl border border-indigo-100 flex gap-3 items-start shadow-sm">
                                             <i data-lucide="info" class="text-indigo-600 flex-shrink-0 mt-0.5" size="18"></i>
                                             <p class="text-[13px] leading-relaxed text-indigo-900 font-medium">
@@ -410,7 +448,7 @@
                         <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
                             <div class="text-center md:text-left">
                                 <h3 class="text-slate-900 font-bold text-xl mb-2 tracking-tight">Shared Learning Environment</h3>
-                                <p class="text-slate-500 max-w-sm text-sm">Fostering collaboration in the age of AI.</p>
+                                <p class="text-slate-500 max-w-sm text-sm">Hosted by Zukunftskolleg Konstanz & The Martin Buber Society of Fellows Jerusalem.</p>
                                 <button onclick="setView('admin-login')" class="mt-6 text-[10px] font-bold uppercase tracking-widest text-slate-300 hover:text-indigo-600 transition-colors flex items-center gap-1 mx-auto md:mx-0"><i data-lucide="lock" size="12"></i> Organizer Login</button>
                             </div>
                             <div class="flex gap-10 items-center opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
