@@ -53,7 +53,8 @@
             registrations: [],
             loading: false,
             isAdminAuthenticated: false,
-            showAbstract: false
+            showAbstract: false,
+            activeTab: 'sun' // Options: sun, mon, tue, wed
         };
 
         async function initAuth() {
@@ -78,6 +79,11 @@
         window.toggleAbstract = (bool) => {
             state.showAbstract = bool;
             document.body.style.overflow = bool ? 'hidden' : 'auto';
+            render();
+        };
+
+        window.setProgramTab = (tabId) => {
+            state.activeTab = tabId;
             render();
         };
 
@@ -247,11 +253,244 @@
                     </div>
                 `;
             } else {
+                let programTimelineHTML = '';
+                
+                if (state.activeTab === 'sun') {
+                    programTimelineHTML = `
+                        <div class="space-y-6 fade-in">
+                            <div class="flex gap-4 p-5 bg-indigo-50/50 rounded-2xl border border-indigo-100 shadow-sm mb-6">
+                                <i data-lucide="plane-arrival" class="text-indigo-600 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <h4 class="font-bold text-indigo-900">12:00 — Arrival</h4>
+                                    <p class="text-slate-600 text-sm mt-0.5">Flight with El Al, arriving in Zurich around 11:30.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="clock" class="text-indigo-600 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <h4 class="font-bold text-slate-800">16:30 — Meeting Point</h4>
+                                    <p class="text-slate-600 text-sm mt-0.5">Meet in front of the <a href="https://maps.app.goo.gl/DSE9Na3KXq31attH8" target="_blank" rel="noopener noreferrer" class="text-indigo-600 underline font-medium hover:text-indigo-800 transition-colors">Hotel Ibis</a>; walk across the river together.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="map-pin" class="text-indigo-600" size="20"></i>
+                                <div>
+                                    <h4 class="font-bold text-slate-800">17:00 – 18:30 — Pulverturm Tour</h4>
+                                    <p class="text-slate-600 text-sm mt-0.5">Pulverturm (also called „Judenturm“) / Open Day Niederburg.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-5 bg-indigo-900 text-white rounded-2xl shadow-md">
+                                <i data-lucide="utensils" class="text-indigo-300 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <span class="text-xs uppercase tracking-wider font-bold text-indigo-200">Evening Session</span>
+                                    <h4 class="font-bold text-white text-lg mt-0.5">Informal Discussion & Dinner</h4>
+                                    <p class="text-indigo-100 text-sm mt-1"><strong>Location:</strong> Wirtshaus Seerhein - Weinstube</p>
+                                    <div class="mt-3 p-3.5 bg-white/10 rounded-xl border border-white/10">
+                                        <p class="text-xs font-semibold text-indigo-200 uppercase tracking-widest">Discussion Topic:</p>
+                                        <p class="text-sm italic text-slate-100 mt-1">"What kind of academic interaction should we have between researchers from Israel and from Germany in the current situation?"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (state.activeTab === 'mon') {
+                    programTimelineHTML = `
+                        <div class="space-y-6 fade-in">
+                            <div class="bg-indigo-600 text-white p-5 rounded-3xl shadow-lg mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <div>
+                                    <span class="text-[10px] tracking-widest uppercase font-bold text-indigo-200">Monday Theme</span>
+                                    <h3 class="text-xl font-bold tracking-tight mt-0.5">"The Transformation of Research Practices"</h3>
+                                </div>
+                                <a href="https://maps.app.goo.gl/6knaN6BaqvozWPLK9" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl text-sm border border-white/10 hover:bg-white/20 transition-all">
+                                    <i data-lucide="map-pin" size="16" class="text-indigo-200"></i>
+                                    <span>Freiräume Hofhalde (City Centre)</span>
+                                </a>
+                            </div>
+                            
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="user-check" class="text-indigo-600 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">09:00 – 09:30</span>
+                                    <h4 class="font-bold text-slate-800">Welcome & Opening Remarks</h4>
+                                    <p class="text-slate-500 text-sm mt-0.5"><strong>Moderator:</strong> Benjamin Wilck</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="users" class="text-indigo-600 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">09:30 – 11:00</span>
+                                    <h4 class="font-bold text-slate-800">Session 1: Roundtable</h4>
+                                    <p class="text-slate-500 text-sm mt-0.5"><strong>Moderator:</strong> Amit Levy</p>
+                                    <p class="text-slate-600 text-sm mt-1.5 italic">Format: Short introduction by each participant on "How I feel about AI" — fears, failures, hopes.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="book-open" class="text-indigo-600 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">11:15 – 12:30</span>
+                                    <h4 class="font-bold text-slate-800">Session 2: Scalable Reading & Corpus Analysis</h4>
+                                    <p class="text-slate-500 text-sm mt-0.5"><strong>Moderator:</strong> Katya Suverina</p>
+                                    <ul class="mt-2.5 space-y-1.5 text-slate-600 text-sm bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span><span><strong>Case Study I:</strong> Ido Wachtel</span></li>
+                                        <li class="flex items-center gap-2 text-slate-400"><span class="w-1.5 h-1.5 bg-slate-300 rounded-full"></span><span><strong>Case Study II:</strong> TBD</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-amber-50 rounded-2xl border border-amber-200">
+                                <i data-lucide="train" class="text-amber-700 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-amber-800 font-semibold">12:30 – 14:15</span>
+                                    <h4 class="font-bold text-amber-900">Transit to St. Gallen</h4>
+                                    <p class="text-amber-800 text-sm mt-0.5">10-min walk to train station, 13:09 train to St. Gallen (picnic lunch on board), followed by a 10-min walk to the monastery.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="library" class="text-indigo-600" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">14:15 – 15:30</span>
+                                    <h4 class="font-bold text-slate-800">Session 3: Site Visits — "Material vs. Digital"</h4>
+                                    <p class="text-slate-600 text-sm mt-0.5">Stiftsbibliothek (St. Gallen Abbey Library) subgroups visit (ca. 30 min each):</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Group A</span>
+                                            <p class="text-xs text-slate-700 mt-1">Manuscript reading room & digitization studio with Emanuele and Christa Schaffert.</p>
+                                        </div>
+                                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Group B (Optional)</span>
+                                            <p class="text-xs text-slate-700 mt-1">Baroque hall of Abbey Library, featuring exposition "Lives in the Middle Ages".</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="archive" class="text-indigo-600" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">16:00 – 18:00</span>
+                                    <h4 class="font-bold text-slate-800">Archive of the Kanton St. Gallen</h4>
+                                    <p class="text-slate-600 text-sm mt-0.5">Digital Reading Room and Analogue Archive tour with Martin Lüthi and Remo Cadalbert.</p>
+                                    <p class="text-indigo-600 font-semibold text-xs mt-1">Focus: How AI revolutionizes archiving.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="utensils" class="text-indigo-600" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">19:00 – 20:30</span>
+                                    <h4 class="font-bold text-slate-800">Dinner, Wrap-up & Debrief</h4>
+                                    <p class="text-slate-600 text-sm mt-0.5"><strong>Location:</strong> Restaurant "Hans im Glück", Markstätte (opposite train station)</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (state.activeTab === 'tue') {
+                    programTimelineHTML = `
+                        <div class="space-y-6 fade-in">
+                            <div class="bg-indigo-600 text-white p-5 rounded-3xl shadow-lg mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <div>
+                                    <span class="text-[10px] tracking-widest uppercase font-bold text-indigo-200">Tuesday Theme</span>
+                                    <h3 class="text-xl font-bold tracking-tight mt-0.5">"New Expertise & Future Output"</h3>
+                                </div>
+                                <a href="https://maps.app.goo.gl/sSGxu1FMYDKXiPWRA" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl text-sm border border-white/10 hover:bg-white/20 transition-all">
+                                    <i data-lucide="map-pin" size="16" class="text-indigo-200"></i>
+                                    <span>Y 326 (Zukunftskolleg Campus)</span>
+                                </a>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="flask" class="text-indigo-600" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">09:00 – 10:15</span>
+                                    <h4 class="font-bold text-slate-800">Session 4: AI in STEM</h4>
+                                    <p class="text-slate-700 font-medium text-sm mt-1">"AI driven behavioral insights: accelerating collective behavior research"</p>
+                                    <p class="text-slate-500 text-sm mt-0.5"><strong>Speaker:</strong> Dr. Ahmed El Hady (Cluster Collective, Dept. of Biology)</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="keyboard" class="text-indigo-600" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">10:30 – 12:00</span>
+                                    <h4 class="font-bold text-slate-800">Session 5: Interactive Roundtable</h4>
+                                    <p class="text-slate-700 font-medium text-sm mt-1">"Prompting — The New Expertise"</p>
+                                    <p class="text-slate-500 text-sm mt-0.5"><strong>Led by:</strong> Alexander Klein (Academic Staff Development, Uni Konstanz)</p>
+                                    <p class="text-slate-400 text-xs italic mt-1.5">12:30 — Lunch break in ZUKO</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-indigo-900 text-white rounded-2xl shadow-md">
+                                <i data-lucide="message-square" class="text-indigo-300 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <span class="text-xs uppercase tracking-wider font-bold text-indigo-200">13:30 – 15:30</span>
+                                    <h4 class="font-bold text-white text-lg mt-0.5">Session 6: Roundtable Symposium with Invited Experts</h4>
+                                    <p class="text-indigo-200 text-sm mt-1"><strong>Topic:</strong> "On the ethics and future of AI-mediated collaboration in research"</p>
+                                    <p class="text-indigo-100 text-sm mt-0.5"><strong>Moderator:</strong> Nurit Stadler (Senior Fellow, MBSF)</p>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 bg-white/10 p-3 rounded-xl border border-white/10">
+                                        <div>
+                                            <span class="text-[10px] uppercase font-bold text-indigo-200">Panelist 1</span>
+                                            <p class="text-xs font-semibold text-white">Juri Opitz</p>
+                                            <p class="text-[10px] text-slate-300">University of Zurich (Comp. Linguistics)</p>
+                                        </div>
+                                        <div>
+                                            <span class="text-[10px] uppercase font-bold text-indigo-200">Panelist 2</span>
+                                            <p class="text-xs font-semibold text-white">Anne Kwaschik</p>
+                                            <p class="text-[10px] text-slate-300">University of Konstanz (History of Science)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="publication" class="text-indigo-600" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">16:00 – 17:00</span>
+                                    <h4 class="font-bold text-slate-800">Session 7: Publication and Output Planning</h4>
+                                    <p class="text-slate-500 text-sm mt-0.5"><strong>Moderator:</strong> Anna de Mase</p>
+                                    <p class="text-indigo-600 text-xs font-bold mt-1">Focus: Outlook</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="utensils" class="text-indigo-600" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">19:30</span>
+                                    <h4 class="font-bold text-slate-800">Dinner in Town</h4>
+                                    <p class="text-slate-600 text-sm mt-0.5"><strong>Location:</strong> Restaurant Steg 4, Hafenstrasse 8</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (state.activeTab === 'wed') {
+                    programTimelineHTML = `
+                        <div class="space-y-6 fade-in">
+                            <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <i data-lucide="users" class="text-indigo-600 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <span class="text-xs text-slate-400 font-semibold">09:00 – 12:00</span>
+                                    <h4 class="font-bold text-slate-800">Individually Arranged Meetings</h4>
+                                    <p class="text-slate-600 text-sm mt-0.5">Dedicated time for peer collaborative discussions and exchange planning.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 p-5 bg-indigo-50 rounded-2xl border border-indigo-100">
+                                <i data-lucide="plane-takeoff" class="text-indigo-600 flex-shrink-0 mt-1" size="20"></i>
+                                <div>
+                                    <h4 class="font-bold text-indigo-900">Departure</h4>
+                                    <p class="text-slate-600 text-sm mt-0.5">Departures as individually arranged (El Al afternoon/evening flights departing from Zurich).</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
                 container.innerHTML = `
                     <!-- Abstract Modal -->
-                    <div id="abstract-modal" class="${state.showAbstract ? 'flex' : 'hidden'} fixed inset-0 z-[100] items-center justify-center p-4 md:p-8 overflow-y-auto">
-                        <div class="modal-backdrop fixed inset-0" onclick="toggleAbstract(false)"></div>
-                        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl relative z-10 fade-in overflow-hidden flex flex-col max-h-[90vh]">
+                    <div id="abstract-modal" class="${state.showAbstract ? 'flex' : 'hidden'} fixed inset-0 z-[100] items-center justify-center p-4 md:p-8 overflow-y-auto animate-in fade-in duration-250">
+                        <div class="modal-backdrop absolute inset-0" onclick="toggleAbstract(false)"></div>
+                        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
                             <div class="p-6 md:p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                                 <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Workshop Abstract</h2>
                                 <button onclick="toggleAbstract(false)" class="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-500">
@@ -270,7 +509,7 @@
                         </div>
                     </div>
 
-                    <header class="relative bg-white border-b border-slate-200 pt-12 pb-28 overflow-hidden">
+                    <header class="relative bg-white border-b border-slate-200 pt-12 pb-24 overflow-hidden">
                         <div class="absolute top-0 right-0 w-1/3 h-full opacity-5 pointer-events-none">
                             <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
                                 <path d="M0 0 L100 0 L100 100 Z" fill="currentColor" class="text-indigo-600" />
@@ -286,8 +525,8 @@
                             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-sm font-semibold mb-8 border border-indigo-100 shadow-sm">
                                 <i data-lucide="users" size="16"></i> Joint Interdisciplinary Workshop
                             </div>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6 leading-[1.1] max-w-4xl tracking-tight">From Tool to Teammate: How Does AI Fundamentally Transform Research Practice?</h1>
-                            <p class="text-xl md:text-2xl text-slate-600 mb-6 max-w-3xl leading-relaxed font-light">
+                            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-[1.15] max-w-4xl tracking-tight">From Tool to Teammate: How Does AI Fundamentally Transform Research Practice?</h1>
+                            <p class="text-xl text-slate-600 mb-6 max-w-3xl leading-relaxed font-light">
                                 Hosted by <span class="font-semibold text-slate-800">Zukunftskolleg Konstanz</span> & <span class="font-semibold text-slate-800">The Martin Buber Society of Fellows Jerusalem</span>.
                             </p>
                             
@@ -299,24 +538,61 @@
 
                             <div class="flex flex-wrap gap-4 text-slate-700 font-medium">
                                 <div class="flex items-center gap-2.5 bg-white px-5 py-3 rounded-xl shadow-sm border border-slate-200">
-                                    <i data-lucide="calendar" class="text-indigo-600" size="20"></i> Monday & Tuesday, June 8–9, 2026
+                                    <i data-lucide="calendar" class="text-indigo-600" size="20"></i> June 7 - 10, 2026
                                 </div>
                                 <div class="flex items-center gap-2.5 bg-white px-5 py-3 rounded-xl shadow-sm border border-slate-200">
-                                    <i data-lucide="map-pin" class="text-indigo-600" size="20"></i> Konstanz
+                                    <i data-lucide="map-pin" class="text-indigo-600" size="20"></i> Konstanz, Germany
                                 </div>
                             </div>
-                            <p class="mt-4 text-sm text-slate-400 italic">Travel days for external participants: Sunday June 7 and Wednesday June 10.</p>
                         </div>
                     </header>
 
                     <main class="max-w-5xl mx-auto px-6 -mt-10 pb-24 relative z-20">
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                            <div class="lg:col-span-2 space-y-16">
+                            <div class="lg:col-span-2 space-y-12">
                                 <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 md:p-10">
-                                    <p class="text-xl text-slate-800 leading-relaxed mb-8 font-medium">Artificial Intelligence is no longer a distant theoretical prospect; it is actively reshaping the mechanics of how we think, write, and discover.</p>
-                                    <div class="space-y-6 text-slate-600 leading-relaxed text-lg">
-                                        <p>Beyond the hype, how do these tools redefine the day-to-day labor of a historian deciphering a century of archives, a sociologist mapping social networks, or a scientist postulating a new hypothesis?</p>
-                                        <p>We invite postdoctoral fellows to help map the shifting methodological landscape of our respective disciplines. This workshop examines the concrete impact of AI across the Humanities, Social Sciences, and STEM.</p>
+                                    <p class="text-xl text-slate-800 leading-relaxed font-medium">Artificial Intelligence is no longer a distant theoretical prospect; it is actively reshaping the mechanics of how we think, write, and discover.</p>
+                                </section>
+
+                                <!-- Interactive Program Section -->
+                                <section id="workshop-program" class="bg-white rounded-3xl border border-slate-200 p-8 md:p-10 shadow-sm space-y-8">
+                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-6">
+                                        <div>
+                                            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                                <i data-lucide="calendar-days" class="text-indigo-600"></i> Workshop Programme
+                                            </h2>
+                                            <p class="text-sm text-slate-500 mt-1">Navigate the event day-by-day</p>
+                                        </div>
+                                        
+                                        <!-- Accommodation Info Tag with Map Link -->
+                                        <a href="https://maps.app.goo.gl/DSE9Na3KXq31attH8" target="_blank" rel="noopener noreferrer" class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 flex items-center gap-3 text-xs w-full md:w-auto hover:bg-slate-100 hover:border-slate-300 transition-all">
+                                            <i data-lucide="hotel" class="text-indigo-600" size="18"></i>
+                                            <div>
+                                                <p class="font-bold text-slate-800">Accommodation</p>
+                                                <p class="text-slate-500 underline decoration-indigo-200 hover:text-indigo-600 transition-colors">Hotel Ibis, Sternenplatz, City Centre</p>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <!-- Navigation Tabs -->
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-slate-50 p-2 rounded-2xl">
+                                        <button onclick="setProgramTab('sun')" class="py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${state.activeTab === 'sun' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}">
+                                            Sun, June 7
+                                        </button>
+                                        <button onclick="setProgramTab('mon')" class="py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${state.activeTab === 'mon' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}">
+                                            Mon, June 8
+                                        </button>
+                                        <button onclick="setProgramTab('tue')" class="py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${state.activeTab === 'tue' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}">
+                                            Tue, June 9
+                                        </button>
+                                        <button onclick="setProgramTab('wed')" class="py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 ${state.activeTab === 'wed' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}">
+                                            Wed, June 10
+                                        </button>
+                                    </div>
+
+                                    <!-- Timeline Render Area -->
+                                    <div class="pt-2">
+                                        ${programTimelineHTML}
                                     </div>
                                 </section>
 
@@ -348,101 +624,34 @@
                                         </div>
                                     </div>
                                 </section>
-
-                                <section>
-                                    <div class="flex items-center gap-3 mb-6 border-b border-slate-200 pb-2">
-                                        <i data-lucide="clock" class="text-indigo-600" size="24"></i>
-                                        <h2 class="text-2xl font-bold text-slate-800 tracking-tight">What to Expect</h2>
-                                    </div>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm transition-colors hover:border-indigo-100">
-                                            <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="file-text" size="22"></i></div>
-                                            <div><h4 class="font-bold">Case Studies</h4><p class="text-slate-500 text-sm">Peer-led AI workflow looks.</p></div>
-                                        </div>
-                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm transition-colors hover:border-indigo-100">
-                                            <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="users" size="22"></i></div>
-                                            <div><h4 class="font-bold">Interactive Roundtables</h4><p class="text-slate-500 text-sm">Dives into scalable reading and bias assessment.</p></div>
-                                        </div>
-                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm transition-colors hover:border-indigo-100">
-                                            <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="map-pin" size="22"></i></div>
-                                            <div><h4 class="font-bold">Field Research</h4><p class="text-slate-500 text-sm">Site visit to an archive in St. Gallen.</p></div>
-                                        </div>
-                                        <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm transition-colors hover:border-indigo-100">
-                                            <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="cpu" size="22"></i></div>
-                                            <div><h4 class="font-bold">Skill Acquisition</h4><p class="text-slate-500 text-sm">Workshops on computational research frameworks.</p></div>
-                                        </div>
-                                    </div>
-                                </section>
-
-                                <section class="bg-slate-900 rounded-3xl p-10 text-white shadow-xl relative overflow-hidden">
-                                    <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500 opacity-10 rounded-full -mr-16 -mt-16"></div>
-                                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                                        <i data-lucide="send" class="text-indigo-400" size="24"></i> Outcomes & Impact
-                                    </h3>
-                                    <ul class="space-y-4">
-                                        <li class="flex gap-4">
-                                            <div class="mt-1"><i data-lucide="check-circle" size="20" class="text-indigo-400"></i></div>
-                                            <p class="text-slate-200"><span class="font-bold text-white">Professional Networking:</span> A joint symposium in Konstanz featuring invited experts.</p>
-                                        </li>
-                                        <li class="flex gap-4">
-                                            <div class="mt-1"><i data-lucide="check-circle" size="20" class="text-indigo-400"></i></div>
-                                            <p class="text-slate-200"><span class="font-bold text-white">Collaborative Online Publication:</span> A shared repository of AI workflows, prompts, and templates.</p>
-                                        </li>
-                                    </ul>
-                                </section>
                             </div>
 
+                            <!-- Right-hand column: Registration Notice & Info -->
                             <div class="lg:col-span-1">
-                                <div class="sticky top-10 bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
-                                    <h2 class="text-2xl font-bold text-slate-900 mb-2">RSVP</h2>
-                                    <p class="text-indigo-600 text-xs font-bold mb-6 uppercase tracking-wider">Registration Deadline: May 10, 2026</p>
-                                    
-                                    <form onsubmit="handleRSVP(event)" class="space-y-5">
-                                        <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Full Name</label><input name="name" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all" placeholder="Dr. Alex Scholar"></div>
-                                        <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Email Address</label><input type="email" name="email" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all" placeholder="email@institution.edu"></div>
-                                        <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Institutional Affiliation</label><select name="affiliation" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none">
-                                            <option value="" disabled selected>Select Affiliation</option>
-                                            <option value="Zukunftskolleg Konstanz">Zukunftskolleg Konstanz</option>
-                                            <option value="Martin Buber Society of Fellows">Martin Buber Society of Fellows</option>
-                                            <option value="Other">Other (Guest)</option>
-                                        </select></div>
-                                        <div><label class="block text-sm font-bold text-slate-700 mb-1.5">Research Field</label><input name="researchField" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="e.g. Digital Humanities"></div>
+                                <div class="sticky top-10 space-y-6">
+                                    <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
+                                        <h2 class="text-2xl font-bold text-slate-900 mb-2">RSVP</h2>
+                                        <p class="text-indigo-600 text-xs font-bold mb-6 uppercase tracking-wider">Registration Notice</p>
                                         
-                                        <div class="pt-4 border-t border-slate-100">
-                                            <label class="block text-sm font-bold text-slate-700 mb-3">Participation Days</label>
-                                            <div class="space-y-2">
-                                                <label class="flex items-start gap-3 cursor-pointer group">
-                                                    <input type="checkbox" name="attending_sunday" class="mt-1 w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="text-sm text-slate-600 leading-tight">Sunday Dinner + Conversation (June 7)</span>
-                                                </label>
-                                                <label class="flex items-start gap-3 cursor-pointer group">
-                                                    <input type="checkbox" name="attending_monday_pract" class="mt-1 w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="text-sm text-slate-600 leading-tight">Monday (June 8): "The Transformation of Research Practices"</span>
-                                                </label>
-                                                <label class="flex items-start gap-3 cursor-pointer group">
-                                                    <input type="checkbox" name="attending_monday_excur" class="mt-1 w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="text-sm text-slate-600 leading-tight">Monday (June 8): Excursion St. Gallen only</span>
-                                                </label>
-                                                <label class="flex items-start gap-3 cursor-pointer group">
-                                                    <input type="checkbox" name="attending_tuesday" class="mt-1 w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                                                    <span class="text-sm text-slate-600 leading-tight">Tuesday (June 9): "New Expertise & Future Output"</span>
-                                                </label>
+                                        <div class="space-y-6 text-slate-600 leading-relaxed text-sm">
+                                            <p>The online registration form is now closed. If you wish to register or inquire about participating in this joint workshop, please contact:</p>
+                                            
+                                            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col gap-1">
+                                                <span class="font-bold text-slate-900">Renate Krüßmann</span>
+                                                <a href="mailto:zukunftskolleg-international@uni-konstanz.de" class="text-indigo-600 hover:text-indigo-800 break-all font-semibold transition-colors flex items-center gap-1.5 mt-1">
+                                                    <i data-lucide="mail" size="14"></i>
+                                                    zukunftskolleg-international@uni-konstanz.de
+                                                </a>
                                             </div>
                                         </div>
 
-                                        <div>
-                                            <label class="block text-sm font-bold text-slate-700 mb-1.5">Dietary Requirements / Special Needs</label>
-                                            <textarea name="dietary" rows="2" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm" placeholder="e.g. Allergies, accessibility needs..."></textarea>
-                                        </div>
-
-                                        <div class="mt-4 p-4 bg-indigo-50 rounded-2xl border border-indigo-100 flex gap-3 items-start shadow-sm">
+                                        <div class="mt-6 p-4 bg-indigo-50 rounded-2xl border border-indigo-100 flex gap-3 items-start shadow-sm">
                                             <i data-lucide="info" class="text-indigo-600 flex-shrink-0 mt-0.5" size="18"></i>
                                             <p class="text-[13px] leading-relaxed text-indigo-900 font-medium">
                                                 This workshop is a shared learning environment. <span class="font-bold underline">No prior technical AI expertise or programming knowledge is required</span> to participate or benefit.
                                             </p>
                                         </div>
-                                        <button type="submit" ${state.loading ? 'disabled' : ''} class="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-100 active:scale-[0.98] disabled:bg-indigo-400 mt-2">${state.loading ? 'Processing...' : 'Register for Workshop'}</button>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
